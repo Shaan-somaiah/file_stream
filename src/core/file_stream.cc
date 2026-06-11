@@ -10,3 +10,35 @@ DEFINE_bool(overwrite, false, "Overwrite existing destination file");
 namespace myfs = file_stream;
 namespace fs = std::filesystem;
 
+myfs::FileEngine::FileEngine(const fs::path& source_file, const fs::path& destination_file)
+    : m_source_file(source_file), m_destination_file(destination_file)
+{
+
+}
+
+void myfs::FileEngine::initialize() {
+
+    LOG(INFO) << "Validating if source file " << m_source_file << " exists";
+    if(!validateFileExists(m_source_file)) {
+        LOG(FATAL) << "Provide valid source file!";
+    }
+
+    LOG(INFO) << "Validating if destination file " << m_destination_file << " exists";
+    if(validateFileExists(m_destination_file)) {
+        if(!FLAGS_overwrite) {
+            LOG(FATAL) << "Destination file already exists, overide with --overwrite";
+        }
+        LOG(WARNING) << "Overwring destination file " << m_destination_file;
+    }
+
+    LOG(INFO) << "Creating destination file : " << m_destination_file; 
+}
+
+bool myfs::FileEngine::validateFileExists(const fs::path& file) {
+    if(fs::exists(file)) {
+        LOG(INFO) << "File found : " << file;
+        return true;
+    }
+    LOG(WARNING) << "File not found : " << file;
+    return false;
+}
