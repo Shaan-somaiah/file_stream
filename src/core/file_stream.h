@@ -16,9 +16,9 @@ namespace file_stream {
 
             FileEngine(const std::filesystem::path& source_file, const std::filesystem::path& destination_file);
 
-            void initialize();
+            bool initialize();
 
-            bool validateFileExists(const std::filesystem::path file);
+            bool validateFileExists(const std::filesystem::path& file);
 
             bool fileStream(const std::filesystem::path& source_file, const std::filesystem::path& destination_file);
             

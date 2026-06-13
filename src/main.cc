@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
     file_stream::FileEngine i_FileEngine(FLAGS_source_file, FLAGS_destination_file);
 
-    i_FileEngine.initialize();
+    bool success = i_FileEngine.initialize();
 
     google::ShutdownGoogleLogging();
 }
