@@ -7,6 +7,7 @@
 DECLARE_string(source_file);
 DECLARE_string(destination_file);
 DECLARE_bool(overwrite);
+DECLARE_string(default_directory);
 
 namespace file_stream {
     class FileEngine {

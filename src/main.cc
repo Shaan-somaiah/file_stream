@@ -5,8 +5,6 @@
 
 DECLARE_string(source_file);
 DECLARE_string(destination_file);
-DECLARE_bool(overwrite);
-
 
 int main(int argc, char* argv[]) {
     FLAGS_log_dir = "/var/log/file_stream_logs";
