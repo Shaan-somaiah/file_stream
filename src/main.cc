@@ -21,5 +21,9 @@ int main(int argc, char* argv[]) {
 
     bool success = i_FileEngine.initialize();
 
+    if(!success) {
+        LOG(INFO) << "File stream failed";
+    }
+
     google::ShutdownGoogleLogging();
 }

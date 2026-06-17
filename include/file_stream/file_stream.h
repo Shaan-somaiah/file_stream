@@ -29,7 +29,7 @@ namespace file_stream {
 
         private:
             const std::filesystem::path m_source_file;
-            const std::filesystem::path m_destination_file;
+            std::filesystem::path m_destination_file;
     };
 
 } // namespace file_stream

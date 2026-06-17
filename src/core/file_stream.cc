@@ -1,5 +1,7 @@
 #include <glog/logging.h>
 #include <gflags/gflags.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <filesystem>
 #include <fstream>
 #include "file_stream/file_stream.h"
@@ -64,8 +66,11 @@ bool myfs::FileEngine::createFile(const std::filesystem::path& file) {
             VLOG(2) << "Default directory " << FLAGS_default_directory << " exists";
             // create file in default directory and return status
             const fs::path full_path = FLAGS_default_directory / file;
-            return (std::ofstream(full_path).good()); 
-
+            if(std::ofstream(full_path).good()) {
+                m_destination_file = full_path;
+                return true;
+            }
+            return false;
         }
 
         VLOG(2) << "Default directory " << FLAGS_default_directory << " does not exist, creating it";
@@ -77,6 +82,7 @@ bool myfs::FileEngine::createFile(const std::filesystem::path& file) {
 
         if(std::ofstream(full_path).good()) {
             LOG(INFO) << "File created under default directory : " << full_path;
+            m_destination_file = full_path;
             return true;
         }
         
@@ -102,3 +108,5 @@ bool myfs::FileEngine::fileStream(const std::filesystem::path& source_file, cons
 bool myfs::FileEngine::overwriteFileStream(const std::filesystem::path& source_file, const std::filesystem::path& destination_file) {
     return true;
 }
+
+
