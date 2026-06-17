@@ -33,7 +33,7 @@ bool myfs::FileEngine::initialize() {
             LOG(FATAL) << "Destination file already exists, overwite with --overwrite";
         }
         LOG(WARNING) << "Overwring destination file " << m_destination_file;
-        return (overwriteFileStream(m_source_file, m_destination_file));
+        return (fileStream(m_source_file, m_destination_file));
     }
 
     LOG(INFO) << "Trying to create destination file : " << m_destination_file; 
@@ -102,11 +102,47 @@ bool myfs::FileEngine::createFile(const std::filesystem::path& file) {
 
 
 bool myfs::FileEngine::fileStream(const std::filesystem::path& source_file, const std::filesystem::path& destination_file) {
-    return true;
-}
-            
-bool myfs::FileEngine::overwriteFileStream(const std::filesystem::path& source_file, const std::filesystem::path& destination_file) {
-    return true;
-}
+     
+    const char* sfile = source_file.c_str();
+    const char* dfile = destination_file.c_str();
 
+    int sfd = open(sfile, O_RDONLY);
+    int dfd = open(dfile, O_WRONLY);
+
+    char buffer[4096];
+
+    bool success = false;
+
+    int iterations = 0;
+
+    while (true) {
+        ssize_t bytes_read = read(sfd, buffer, sizeof(buffer));
+        iterations++;
+
+        if (bytes_read == 0) {
+            if(iterations == 1) {
+                LOG(WARNING) << "Empty source file, not copying";
+            }
+            else {
+                LOG(INFO) << "Done reading entire file";
+            }
+            success=true;
+            break;  // EOF
+        }
+
+        if (bytes_read < 0) {
+            perror("read");
+            break;
+        }
+
+        ssize_t bytes_written = write(dfd, buffer, bytes_read);
+
+        if (bytes_written < 0) {
+            perror("write");
+            break;
+        }
+    }
+
+    return success;
+}
 
